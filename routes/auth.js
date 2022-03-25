@@ -3,9 +3,9 @@ var passport = require('passport');
 var LocalStrategy = require('passport-local');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
+const Post = require('../models/Post');
 var router = express.Router();
 const { body, validationResult } = require('express-validator');
-
 const signupValidationSchema = [
   body('fname')
     .exists()
@@ -105,10 +105,11 @@ passport.deserializeUser((id, done) => {
 });
 
 const isAuth = (req, res, next) => {
-  if (req.user) {
-    next();
-  }
-  res.redirect('/login');
+  //   if (req.user) {
+  //     next();
+  //   }
+  //   next(new Error('User not logged in'));
+  next();
 };
 
 router.get('/login', function (req, res, next) {
@@ -203,8 +204,45 @@ router.post('/logout', (req, res, next) => {
   res.redirect('/login');
 });
 
+router.get('/user', isAuth, (req, res, next) => {
+  res.render('user', { user: req.user });
+});
+
 router.get('/new-post', isAuth, (req, res, next) => {
   res.render('./forms/post-form');
 });
+
+router.post(
+  '/new-post',
+  isAuth,
+  [
+    body('title', 'A title is required.').trim().isLength({ min: 3 }).escape(),
+    body('body', 'Your thought is missing!')
+      .trim()
+      .isLength({ min: 3, max: 200 })
+      .escape(),
+  ],
+  (req, res, next) => {
+    const errors = validationResult(req);
+    console.log('validation errors: ', errors);
+    if (!errors.isEmpty()) {
+      res.render('./forms/post-form', { errors: errors });
+    }
+
+    const newPost = new Post({
+      title: req.body.title,
+      body: req.body.body,
+      creatorId: req.user.id,
+    });
+
+    newPost.save((err) => {
+      console.log('new post saved successfully');
+      if (err) {
+        return next(err);
+      }
+      res.redirect('/');
+    });
+  }
+);
 
 module.exports = router;
