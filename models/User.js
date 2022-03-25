@@ -9,4 +9,7 @@ const UserSchema = new Schema({
   membershipStatus: { type: String, default: 'regular' },
 });
 
+UserSchema.virtual('full_name').get(function () {
+  return `${this.name.first} ${this.name.last}`;
+});
 module.exports = mongoose.model('User', UserSchema);
