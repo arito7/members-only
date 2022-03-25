@@ -235,4 +235,34 @@ router.post(
   }
 );
 
+/**
+ * ADMIN
+ */
+router.get('/admin', (req, res, next) => {
+  res.render('admin');
+});
+
+router.post(
+  '/admin',
+  validationSchemas.adminUpgradeCodeValidationSchema,
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      console.log(errors.errors);
+      res.render('admin');
+    }
+    if (req.body.adminUpgradePassword === process.env.ADMIN_CODE) {
+      User.findByIdAndUpdate(res.user.id, { admin: true }).exec((err) => {
+        if (err) {
+          return next(err);
+        }
+        res.redirect('/user');
+      });
+    } else {
+      console.log(errors.errors);
+      res.render('admin');
+    }
+  }
+);
+
 module.exports = router;
