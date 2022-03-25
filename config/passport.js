@@ -11,7 +11,7 @@ const localStrategy = new LocalStrategy((username, password, done) => {
     if (!user) {
       return done(null, false, { message: 'Incorrect Username' });
     }
-    bcrypt.compare(pass, user.password, (err, res) => {
+    bcrypt.compareSync(password, user.hash, (err, res) => {
       if (res) {
         return done(null, user);
       } else {

@@ -1,71 +1,12 @@
 require('dotenv').config();
-var express = require('express');
-var passport = require('passport');
-var LocalStrategy = require('passport-local');
+const express = require('express');
+const passport = require('passport');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const Post = require('../models/Post');
-var router = express.Router();
-const app = require('../app');
+const router = express.Router();
 const validationSchemas = require('../config/validationSchemas');
-/* Configure password authentication strategy.
- *
- * The `LocalStrategy` authenticates users by verifying a username and password.
- * The strategy parses the username and password from the request and calls the
- * `verify` function.
- *
- * The `verify` function queries the database for the user record and verifies
- * the password by hashing the password supplied by the user and comparing it to
- * the hashed password stored in the database.  If the comparison succeeds, the
- * user is authenticated; otherwise, not.
- */
-
-const localStrategy = new LocalStrategy((username, password, done) => {
-  User.findOne({ username: username }, (err, user) => {
-    if (err) {
-      return done(err);
-    }
-    if (!user) {
-      return done(null, false, { message: 'Incorrect Username' });
-    }
-    bcrypt.compareSync(password, user.hash, (err, res) => {
-      if (res) {
-        return done(null, user);
-      } else {
-        return done(null, false, { message: 'Incorrect Password' });
-      }
-    });
-    return done(null, user);
-  });
-});
-
-passport.use(localStrategy);
-
-/* Configure session management.
- *
- * When a login session is established, information about the user will be
- * stored in the session.  This information is supplied by the `serializeUser`
- * function, which is yielding the user ID and username.
- *
- * As the user interacts with the app, subsequent requests will be authenticated
- * by verifying the session.  The same user information that was serialized at
- * session establishment will be restored when the session is authenticated by
- * the `deserializeUser` function.
- *
- * Since every request to the app needs the user ID and username, in order to
- * fetch todo records and render the user element in the navigation bar, that
- * information is stored in the session.
- */
-
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
-
-passport.deserializeUser((id, done) => {
-  User.findById(id, (err, user) => {
-    done(err, user);
-  });
-});
+const { validationResult } = require('express-validator');
 
 router.use((req, res, next) => {
   res.locals.currentUser = req.user;
@@ -132,16 +73,6 @@ router.get('/logout', function (req, res, next) {
 router.get('/signup', function (req, res, next) {
   res.render('signup');
 });
-
-/* POST /signup
- *
- * This route creates a new user account.
- *
- * A desired username and password are submitted to this route via an HTML form,
- * which was rendered by the `GET /signup` route.  The password is hashed and
- * then a new user record is inserted into the database.  If the record is
- * successfully created, the user is logged in.
- */
 
 router.post(
   '/signup',
