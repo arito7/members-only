@@ -1,4 +1,16 @@
-<div class="card purple lighten-5 purple-text">
-  <div class="card-title"><%= post.title %></div>
-  <div class="card-content"><%= post.body %></div>
+<div class="card purple lighten-5 purple-text hoverable">
+  <div class="card-content">
+    <div class="card-title"><%= post.title %></div>
+    <p><%= post.body %></p>
+    <% if (locals.currentUser && currentUser.membershipStatus === 'member') { %>
+    <p>By <%= post.creator.full_name %> <%=post.formatted_date %></p>
+    <% } %>
+  </div>
+
+  <% if (locals.currentUser && currentUser.id.toString() ===
+  post.creator.id.toString()) { %>
+  <div class="card-action left-align">
+    <a href="">Edit Post</a>
+  </div>
+  <% } %>
 </div>
