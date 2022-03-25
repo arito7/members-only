@@ -1,3 +1,4 @@
+require('dotenv').config();
 var express = require('express');
 var passport = require('passport');
 var LocalStrategy = require('passport-local');
@@ -248,5 +249,25 @@ router.post(
     });
   }
 );
+
+router.post('/upgrade', body('secret').trim().escape(), (req, res, next) => {
+  if (process.env.PASSCODE === req.body.secret) {
+    User.findByIdAndUpdate(req.user.id, { membershipStatus: 'member' }).exec(
+      (err) => {
+        if (err) {
+          return next(err);
+        }
+        res.render('user', {
+          messages: [
+            {
+              type: 'success',
+              message: 'Congratulation You are now a member!',
+            },
+          ],
+        });
+      }
+    );
+  }
+});
 
 module.exports = router;
