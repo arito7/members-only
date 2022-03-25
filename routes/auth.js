@@ -236,7 +236,7 @@ router.post(
     const newPost = new Post({
       title: req.body.title,
       body: req.body.body,
-      creatorId: req.user.id,
+      creator: req.user.id,
     });
 
     newPost.save((err) => {
