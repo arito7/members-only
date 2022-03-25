@@ -8,4 +8,8 @@ const PostSchema = new Schema({
   creator: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 });
 
+PostSchema.virtual('formatted_date').get(function () {
+  return new Date(this.timestamp).toLocaleDateString();
+});
+
 module.exports = mongoose.model('Post', PostSchema);
