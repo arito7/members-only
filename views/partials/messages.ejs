@@ -1,0 +1,9 @@
+<div class="row">
+  <% messages.forEach(message => { %>
+  <div
+    class="col s12 <%= message.type === 'success' ? 'green' : 'red' %> lighten-5"
+  >
+    <p><%= message.message %></p>
+  </div>
+  <% }) %>
+</div>
