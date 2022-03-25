@@ -11,9 +11,11 @@ const UserSchema = new Schema({
     default: 'regular',
     enum: ['regular', 'member'],
   },
+  admin: { type: Boolean, default: false },
 });
 
 UserSchema.virtual('full_name').get(function () {
   return `${this.name.first} ${this.name.last}`;
 });
+
 module.exports = mongoose.model('User', UserSchema);
