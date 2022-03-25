@@ -6,44 +6,8 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const Post = require('../models/Post');
 var router = express.Router();
-const { body, validationResult } = require('express-validator');
-const signupValidationSchema = [
-  body('fname')
-    .exists()
-    .trim()
-    .isLength({ min: 3 })
-    .isAlpha()
-    .withMessage('Your name can only consist of alphabetical characters.')
-    .escape(),
-  body('lname')
-    .exists()
-    .trim()
-    .isLength({ min: 3 })
-    .isAlpha()
-    .withMessage('Your name can only consist of alphabetical characters.')
-    .escape(),
-  body('username', 'Username cannot be empty.')
-    .exists()
-    .trim()
-    .isLength({ min: 3 })
-    .escape(),
-  body('password').exists().trim().isLength({ min: 3 }).escape(),
-  body('rpassword')
-    .exists()
-    .custom((value, { req }) => value === req.body.password)
-    .trim()
-    .isLength({ min: 3 })
-    .escape(),
-];
-
-const loginValidation = [
-  body('username', 'Username cannot be empty.')
-    .exists()
-    .trim()
-    .isLength({ min: 3 })
-    .escape(),
-  body('password').exists().trim().isLength({ min: 3 }).escape(),
-];
+const app = require('../app');
+const validationSchemas = require('../config/validationSchemas');
 /* Configure password authentication strategy.
  *
  * The `LocalStrategy` authenticates users by verifying a username and password.
@@ -57,7 +21,6 @@ const loginValidation = [
  */
 
 const localStrategy = new LocalStrategy((username, password, done) => {
-  console.log('using local strategy');
   User.findOne({ username: username }, (err, user) => {
     if (err) {
       return done(err);
@@ -66,7 +29,6 @@ const localStrategy = new LocalStrategy((username, password, done) => {
       return done(null, false, { message: 'Incorrect Username' });
     }
     bcrypt.compareSync(password, user.hash, (err, res) => {
-      console.log('comparing passwords');
       if (res) {
         return done(null, user);
       } else {
@@ -109,6 +71,7 @@ router.use((req, res, next) => {
   res.locals.currentUser = req.user;
   next();
 });
+
 const isAuth = (req, res, next) => {
   //   if (req.user) {
   //     next();
@@ -180,34 +143,38 @@ router.get('/signup', function (req, res, next) {
  * successfully created, the user is logged in.
  */
 
-router.post('/signup', signupValidationSchema, (req, res, next) => {
-  const error = validationResult(req);
+router.post(
+  '/signup',
+  validationSchemas.signupValidationSchema,
+  (req, res, next) => {
+    const error = validationResult(req);
 
-  if (!error.isEmpty()) {
-    next(error);
-  }
+    if (!error.isEmpty()) {
+      next(error);
+    }
 
-  bcryptjs.genSalt().then((salt) => {
-    bcryptjs.hash(req.body.password, salt).then((hash) => {
-      new User({
-        name: { first: req.body.fname, last: req.body.lname },
-        username: req.body.username,
-        hash: hash,
-        salt: salt,
-      }).save((err, savedUser) => {
-        if (err) {
-          return next(err);
-        }
-        res.redirect('/');
+    bcrypt.genSalt().then((salt) => {
+      bcrypt.hash(req.body.password, salt).then((hash) => {
+        new User({
+          name: { first: req.body.fname, last: req.body.lname },
+          username: req.body.username,
+          hash: hash,
+          salt: salt,
+        }).save((err, savedUser) => {
+          if (err) {
+            return next(err);
+          }
+          req.login(savedUser, (err) => {
+            if (err) {
+              return next(err);
+            }
+            res.redirect('/');
+          });
+        });
       });
     });
-  });
-});
-
-router.post('/logout', (req, res, next) => {
-  req.logout();
-  res.redirect('/login');
-});
+  }
+);
 
 router.get('/user', isAuth, (req, res, next) => {
   res.render('user', { user: req.user });
@@ -220,13 +187,7 @@ router.get('/new-post', isAuth, (req, res, next) => {
 router.post(
   '/new-post',
   isAuth,
-  [
-    body('title', 'A title is required.').trim().isLength({ min: 3 }).escape(),
-    body('body', 'Your thought is missing!')
-      .trim()
-      .isLength({ min: 3, max: 200 })
-      .escape(),
-  ],
+  validationSchemas.postValidationSchema,
   (req, res, next) => {
     const errors = validationResult(req);
     console.log('validation errors: ', errors);
@@ -250,24 +211,28 @@ router.post(
   }
 );
 
-router.post('/upgrade', body('secret').trim().escape(), (req, res, next) => {
-  if (process.env.PASSCODE === req.body.secret) {
-    User.findByIdAndUpdate(req.user.id, { membershipStatus: 'member' }).exec(
-      (err) => {
-        if (err) {
-          return next(err);
+router.post(
+  '/upgrade',
+  validationSchemas.passcodeValidationSchema,
+  (req, res, next) => {
+    if (process.env.PASSCODE === req.body.secret) {
+      User.findByIdAndUpdate(req.user.id, { membershipStatus: 'member' }).exec(
+        (err) => {
+          if (err) {
+            return next(err);
+          }
+          res.render('user', {
+            messages: [
+              {
+                type: 'success',
+                message: 'Congratulation You are now a member!',
+              },
+            ],
+          });
         }
-        res.render('user', {
-          messages: [
-            {
-              type: 'success',
-              message: 'Congratulation You are now a member!',
-            },
-          ],
-        });
-      }
-    );
+      );
+    }
   }
-});
+);
 
 module.exports = router;
