@@ -1,4 +1,5 @@
-const { body, validationResult } = require('express-validator');
+require('dotenv').config();
+const { body } = require('express-validator');
 
 exports.signupValidationSchema = [
   body('fname')
@@ -49,4 +50,14 @@ exports.loginValidationSchema = [
     .isLength({ min: 3 })
     .escape(),
   body('password').exists().trim().isLength({ min: 3 }).escape(),
+];
+
+exports.adminUpgradeCodeValidationSchema = [
+  body('admin-upgrade-password')
+    .exists()
+    .trim()
+    .custom((val) => {
+      val === process.env.ADMIN_CODE;
+    })
+    .escape(),
 ];
