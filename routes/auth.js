@@ -104,6 +104,10 @@ passport.deserializeUser((id, done) => {
   });
 });
 
+router.use((req, res, next) => {
+  res.locals.currentUser = req.user;
+  next();
+});
 const isAuth = (req, res, next) => {
   //   if (req.user) {
   //     next();
