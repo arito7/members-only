@@ -1,12 +1,12 @@
 require('dotenv').config();
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
 const session = require('express-session');
 const passport = require('passport');
-const mongoose = require('mongoose');
+const MongoStore = require('connect-mongo');
 
 // DB
 require('./config/mongodb');
@@ -23,6 +23,9 @@ app.set('view engine', 'ejs');
 
 app.use(
   session({
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGODB_URI,
+    }),
     saveUninitialized: true,
     resave: false,
     secret: process.env.secret,
