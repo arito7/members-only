@@ -87,25 +87,44 @@ router.post(
       return next(error);
     }
 
-    bcrypt.genSalt().then((salt) => {
-      bcrypt.hash(req.body.password, salt).then((hash) => {
-        new User({
-          name: { first: req.body.fname, last: req.body.lname },
-          username: req.body.username,
-          hash: hash,
-          salt: salt,
-        }).save((err, savedUser) => {
-          if (err) {
-            return next(err);
-          }
-          req.login(savedUser, (err) => {
-            if (err) {
-              return next(err);
-            }
-            res.redirect('/');
+    User.exists({ username: req.body.username }).exec((err, exists) => {
+      if (err) {
+        return next(err);
+      }
+      if (exists) {
+        const error = new Error('This username is already taken.');
+        res.render('template', {
+          partial: 'signup',
+          data: {
+            errors: [error],
+            currentUser: new User({
+              name: { first: req.body.fname, last: req.body.lname },
+              username: req.body.username,
+            }),
+          },
+        });
+      } else {
+        bcrypt.genSalt().then((salt) => {
+          bcrypt.hash(req.body.password, salt).then((hash) => {
+            new User({
+              name: { first: req.body.fname, last: req.body.lname },
+              username: req.body.username,
+              hash: hash,
+              salt: salt,
+            }).save((err, savedUser) => {
+              if (err) {
+                return next(err);
+              }
+              req.login(savedUser, (err) => {
+                if (err) {
+                  return next(err);
+                }
+                res.redirect('/');
+              });
+            });
           });
         });
-      });
+      }
     });
   }
 );
@@ -194,5 +213,5 @@ router.post(
   }
 );
 
-router.get('/post/:id/delete');
+router.post('/:id/delete');
 module.exports = router;
