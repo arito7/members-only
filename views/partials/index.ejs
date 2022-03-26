@@ -1,0 +1,10 @@
+<div class="row">
+  <h2>Recent Posts</h2>
+  <% if (posts && posts.length > 0) { %>
+  <ul>
+    <% posts.forEach(post => { %>
+    <li><%- include('./post-card', {post}) %></li>
+    <% }) %>
+  </ul>
+  <% } %>
+</div>
