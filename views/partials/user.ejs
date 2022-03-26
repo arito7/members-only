@@ -1,0 +1,88 @@
+<div class="row">
+  <div class="col s12">
+    <h2>Hey, <%= currentUser.full_name %></h2>
+  </div>
+</div>
+<div class="row">
+  <div class="col s12">
+    <table>
+      <tbody>
+        <tr>
+          <th>Name</th>
+          <td><%= locals.currentUser.full_name %></td>
+        </tr>
+
+        <tr>
+          <th>Membership Status</th>
+          <td><%= locals.currentUser.membershipStatus %></td>
+        </tr>
+
+        <% if (currentUser.membershipStatus !== 'member') { %>
+        <div class="col s12">
+          <p>Enter the secret passcode and upgrade your membership now!</p>
+        </div>
+
+        <div class="col s12 text-field">
+          <form action="/upgrade" method="post">
+            <div class="col s12 input-field">
+              <label for="secret">Secret Passcode</label>
+              <input type="text" required name="secret" id="secret" />
+            </div>
+
+            <div class="col s12 input-field">
+              <button type="submit" class="purple btn">Upgrade</button>
+            </div>
+          </form>
+        </div>
+        <% } %> <% if (currentUser.admin) { %>
+        <tr>
+          <th>Priviledge</th>
+          <td>Administrator</td>
+        </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col s12">
+    <table>
+      <thead>
+        <tr>
+          <th colspan="2" class="center-align">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td colspan="2" class="center-align">
+            <a href="/new-post">Create a new Post</a>
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="2" class="center-align">
+            <a href="/logout">Logout</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<% if (locals.messages && locals.messages.length > 0) { %> <%-
+include('./partials/messages', {messages}) %> <% } %> <% if (!currentUser.admin)
+{ %>
+<div class="row blue lighten-5 blue-text">
+  <div class="col s12">
+    <p>Are you an admin?</p>
+    <p><a class="btn blue" href="/admin">Upgrade to admin</a></p>
+  </div>
+</div>
+<% } else {%>
+<div class="row blue lighten-5 blue-text">
+  <div class="col s12">
+    <p>Administrator</p>
+  </div>
+</div>
+<% } %>

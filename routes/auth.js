@@ -74,7 +74,7 @@ router.get('/logout', function (req, res, next) {
  * will be sent to the `POST /signup` route.
  */
 router.get('/signup', function (req, res, next) {
-  res.render('signup');
+  res.render('template', { partial: 'signup', data: {} });
 });
 
 router.post(
@@ -111,11 +111,11 @@ router.post(
 );
 
 router.get('/user', isAuth, (req, res, next) => {
-  res.render('user');
+  res.render('template', { partial: 'user', data: {} });
 });
 
 router.get('/new-post', isAuth, (req, res, next) => {
-  res.render('./forms/post-form');
+  res.render('template', { partial: 'post-form', data: {} });
 });
 
 router.post(
