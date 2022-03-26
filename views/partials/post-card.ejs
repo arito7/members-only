@@ -1,16 +1,30 @@
-<div class="card purple lighten-5 purple-text hoverable">
-  <div class="card-content">
+<div class="card grey darken-3 white-text hoverable">
+  <div class="card-content" style="padding-bottom: 1rem">
     <div class="card-title"><%= post.title %></div>
     <p><%= post.body %></p>
     <% if (locals.currentUser && currentUser.membershipStatus === 'member') { %>
-    <p>By <%= post.creator.full_name %> <%=post.formatted_date %></p>
+    <div
+      style="
+        margin-top: 1rem;
+        display: flex;
+        justify-content: space-between;
+        gap: 0.5rem;
+        align-items: center;
+      "
+    >
+      <i class="material-icons">perm_identity</i>
+      <span class="truncate"> <%= post.creator.full_name %> </span>
+      <i class="material-icons">watch_later</i>
+      <span class="truncate"> <%= post.formatted_date %> </span>
+    </div>
     <% } %>
   </div>
 
-  <% if (locals.currentUser && currentUser.id.toString() ===
-  post.creator.id.toString()) { %>
+  <% if (locals.currentUser) { %>
   <div class="card-action left-align">
-    <a href="">Edit Post</a>
+    <% if (currentUser.admin) { %>
+    <a href="" class="red-text">Delete</a>
+    <% } %>
   </div>
   <% } %>
 </div>
