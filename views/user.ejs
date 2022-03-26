@@ -17,6 +17,34 @@
           </div>
         </div>
 
+        <% if (locals.messages && locals.messages.length > 0) { %> <%-
+        include('./partials/messages', {messages}) %> <% } %>
+
+        <div class="row blue lighten-5">
+          <div class="col s12">
+            <h5>Current Status: <%=currentUser.membershipStatus %></h5>
+          </div>
+
+          <% if (currentUser.membershipStatus !== 'member') { %>
+          <div class="col s12">
+            <p>Enter the secret passcode and upgrade your membership now!</p>
+          </div>
+
+          <div class="col s12 text-field">
+            <form action="/upgrade" method="post">
+              <div class="col s12 input-field">
+                <label for="secret">Secret Passcode</label>
+                <input type="text" required name="secret" id="secret" />
+              </div>
+
+              <div class="col s12 input-field">
+                <button type="submit" class="purple btn">Upgrade</button>
+              </div>
+            </form>
+          </div>
+          <% } %>
+        </div>
+
         <div class="row">
           <div class="col s12">
             <a href="/logout" class="btn red">Logout</a>
