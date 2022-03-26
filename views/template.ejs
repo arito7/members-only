@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+  <%- include('./partials/head') %>
+  <body class="grey darken-4 white-text">
+    <%- include('./partials/header') %>
+    <main>
+      <div class="container center-align">
+        <%- include(`./partials/${partial}`, {...data}) %>
+      </div>
+    </main>
+  </body>
+</html>
