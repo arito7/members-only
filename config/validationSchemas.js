@@ -56,8 +56,6 @@ exports.adminUpgradeCodeValidationSchema = [
   body('admin-upgrade-password')
     .exists()
     .trim()
-    .custom((val) => {
-      val === process.env.ADMIN_CODE;
-    })
+    .custom((val) => val === process.env.ADMIN_CODE)
     .escape(),
 ];
