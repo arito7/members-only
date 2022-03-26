@@ -12,9 +12,9 @@
         align-items: center;
       "
     >
-      <i class="material-icons">perm_identity</i>
+      <i class="material-icons-round">perm_identity</i>
       <span class="truncate"> <%= post.creator.full_name %> </span>
-      <i class="material-icons">watch_later</i>
+      <i class="material-icons-round">watch_later</i>
       <span class="truncate"> <%= post.formatted_date %> </span>
     </div>
     <% } %>
@@ -23,7 +23,7 @@
   <% if (locals.currentUser) { %>
   <div class="card-action left-align">
     <% if (currentUser.admin) { %>
-    <a href="" class="red-text">Delete</a>
+    <a href="/post/delete/<%= post.id %>" class="red-text">Delete</a>
     <% } %>
   </div>
   <% } %>
