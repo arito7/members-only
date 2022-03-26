@@ -6,5 +6,12 @@
     <li><%- include('./post-card', {post}) %></li>
     <% }) %>
   </ul>
-  <% } %>
+  <% } else { %>
+  <p>There aren't any posts yet.</p>
+  <p>Be the first!</p>
+  <% if (currentUser) { %>
+  <a href="/new-post" class="btn">Write a Post!</a>
+  <% } else { %>
+  <a href="/signup" class="btn">Signup</a>
+  <% }} %>
 </div>
