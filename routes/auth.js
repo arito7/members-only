@@ -14,12 +14,15 @@ router.use((req, res, next) => {
 });
 
 const isAuth = (req, res, next) => {
-  //   if (req.user) {
-  //     next();
-  //   }
-  //   next(new Error('User not logged in'));
-  next();
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect('/unauthorized');
 };
+
+router.get('/unauthorized', (req, res, next) => {
+  res.render('unauthorized');
+});
 
 router.get('/login', function (req, res, next) {
   if (req.user) {
@@ -81,7 +84,7 @@ router.post(
     const error = validationResult(req);
 
     if (!error.isEmpty()) {
-      next(error);
+      return next(error);
     }
 
     bcrypt.genSalt().then((salt) => {
@@ -108,7 +111,7 @@ router.post(
 );
 
 router.get('/user', isAuth, (req, res, next) => {
-  res.render('user', { user: req.user });
+  res.render('user');
 });
 
 router.get('/new-post', isAuth, (req, res, next) => {
@@ -182,18 +185,14 @@ router.post(
       console.log(errors.errors);
       res.render('admin');
     }
-    if (req.body.adminUpgradePassword === process.env.ADMIN_CODE) {
-      User.findByIdAndUpdate(res.user.id, { admin: true }).exec((err) => {
-        if (err) {
-          return next(err);
-        }
-        res.redirect('/user');
-      });
-    } else {
-      console.log(errors.errors);
-      res.render('admin');
-    }
+    User.findByIdAndUpdate(req.user.id, { admin: true }).exec((err) => {
+      if (err) {
+        return next(err);
+      }
+      res.redirect('/user');
+    });
   }
 );
 
+router.get('/post/:id/delete');
 module.exports = router;
