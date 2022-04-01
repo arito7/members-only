@@ -1,28 +1,24 @@
 require('dotenv').config();
 const express = require('express');
 const passport = require('passport');
-const bcrypt = require('bcryptjs');
-const User = require('../models/User');
 const Post = require('../models/Post');
 const router = express.Router();
 const validationSchemas = require('../config/validationSchemas');
 const { validationResult } = require('express-validator');
+const {
+  isAuth,
+  getUnauthorized,
+  getLogout,
+  getSignup,
+  postSignup,
+} = require('../controllers/authController');
 
 router.use((req, res, next) => {
   res.locals.currentUser = req.user;
   next();
 });
 
-const isAuth = (req, res, next) => {
-  if (req.isAuthenticated()) {
-    return next();
-  }
-  return res.redirect('/unauthorized');
-};
-
-router.get('/unauthorized', (req, res, next) => {
-  res.render('unauthorized');
-});
+router.get('/unauthorized', getUnauthorized);
 
 router.get('/login', function (req, res, next) {
   if (req.user) {
@@ -40,68 +36,15 @@ router.post(
   })
 );
 
-router.get('/logout', function (req, res, next) {
-  req.logout();
-  res.redirect('/');
-});
+router.get('/logout', getLogout);
 
-router.get('/signup', function (req, res, next) {
-  if (req.isAuthenticated()) {
-    return res.redirect('/');
-  }
-  return res.render('template', { partial: 'signup', data: {} });
-});
+router.get('/signup', getSignup);
 
 router.post(
   '/signup',
   validationSchemas.signupValidationSchema,
-  (req, res, next) => {
-    const error = validationResult(req);
-
-    if (!error.isEmpty()) {
-      return next(error);
-    }
-
-    User.exists({ username: req.body.username }).exec((err, exists) => {
-      if (err) {
-        return next(err);
-      }
-      if (exists) {
-        const error = new Error('This username is already taken.');
-        res.render('template', {
-          partial: 'signup',
-          data: {
-            errors: [error],
-            currentUser: new User({
-              name: { first: req.body.fname, last: req.body.lname },
-              username: req.body.username,
-            }),
-          },
-        });
-      } else {
-        bcrypt.genSalt().then((salt) => {
-          bcrypt.hash(req.body.password, salt).then((hash) => {
-            new User({
-              name: { first: req.body.fname, last: req.body.lname },
-              username: req.body.username,
-              hash: hash,
-              salt: salt,
-            }).save((err, savedUser) => {
-              if (err) {
-                return next(err);
-              }
-              req.login(savedUser, (err) => {
-                if (err) {
-                  return next(err);
-                }
-                res.redirect('/');
-              });
-            });
-          });
-        });
-      }
-    });
-  }
+  validationSchemas.checkValidationResults,
+  postSignup
 );
 
 router.get('/user', isAuth, (req, res, next) => {
