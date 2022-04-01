@@ -149,13 +149,16 @@ router.post(
           if (err) {
             return next(err);
           }
-          res.render('user', {
-            messages: [
-              {
-                type: 'success',
-                message: 'Congratulation You are now a member!',
-              },
-            ],
+          res.render('template', {
+            partial: 'user',
+            data: {
+              messages: [
+                {
+                  type: 'success',
+                  message: 'Congratulation You are now a member!',
+                },
+              ],
+            },
           });
         }
       );
