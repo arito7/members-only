@@ -1,5 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap');
+
 body {
-  font: 14px 'Lucida Grande', Helvetica, Arial, sans-serif;
+  font: 14px 'Quicksand', 'Lucida Grande', Helvetica, Arial, sans-serif;
 }
 
 header,
@@ -18,4 +20,8 @@ footer {
 
 a {
   color: #00b7ff;
+}
+
+.rounded {
+  border-radius: 1rem !important;
 }
