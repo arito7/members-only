@@ -1,8 +1,8 @@
 require('dotenv').config();
 const express = require('express');
 const passport = require('passport');
-const Post = require('../models/Post');
 const router = express.Router();
+const User = require('../models/User');
 const validationSchemas = require('../config/validationSchemas');
 const { validationResult } = require('express-validator');
 const {
@@ -24,7 +24,7 @@ router.get('/login', function (req, res, next) {
   if (req.user) {
     return res.redirect('/user');
   }
-  return res.render('login');
+  return res.render('template', { partial: 'login', data: {} });
 });
 
 router.post(
@@ -113,7 +113,7 @@ router.post(
  * ADMIN
  */
 router.get('/admin', (req, res, next) => {
-  res.render('admin');
+  res.render('template', { partial: 'admin', data: {} });
 });
 
 router.post(
@@ -133,14 +133,5 @@ router.post(
     });
   }
 );
-
-router.get('/post/delete/:id', (req, res, next) => {
-  Post.findByIdAndDelete(req.params.id).exec((err) => {
-    if (err) {
-      return next(err);
-    }
-    res.redirect('/');
-  });
-});
 
 module.exports = router;
