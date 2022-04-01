@@ -10,6 +10,10 @@ const posts = Router();
 
 posts.post('/', isAuth, postValidationSchema, postPost);
 
+posts.get('/', isAuth, (req, res, next) => {
+  res.render('template', { partial: 'post-form', data: {} });
+});
+
 posts.get('/delete/:id', deletePost);
 
 module.exports = posts;
