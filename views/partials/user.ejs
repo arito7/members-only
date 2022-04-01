@@ -4,7 +4,7 @@
   </div>
 </div>
 <div class="row">
-  <div class="col s12">
+  <div class="col s12 m8 offset-m2">
     <table>
       <tbody>
         <tr>
@@ -46,7 +46,7 @@
 </div>
 
 <div class="row">
-  <div class="col s12">
+  <div class="col s12 m8 offset-m2">
     <table>
       <thead>
         <tr>
@@ -73,8 +73,8 @@
 <% if (locals.messages && locals.messages.length > 0) { %> <%-
 include('./partials/messages', {messages}) %> <% } %> <% if (!currentUser.admin)
 { %>
-<div class="row blue lighten-5 blue-text">
-  <div class="col s12">
+<div class="row">
+  <div class="col s12 m8 offset-m2 blue lighten-5 blue-text">
     <p>Are you an admin?</p>
     <p><a class="btn blue" href="/admin">Upgrade to admin</a></p>
   </div>
