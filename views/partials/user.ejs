@@ -31,7 +31,7 @@
 
 <div class="row">
   <div class="col s12 m8 offset-m2">
-    <table >
+    <table class="grey darken-3 rounded">
       <thead>
         <tr style="border-color: white;">
           <th colspan="2" class="center-align">Actions</th>
@@ -52,6 +52,7 @@
       </tbody>
     </table>
   </div>
+
 </div>
 
 <% if (currentUser.membershipStatus !== 'member') { %>
@@ -80,14 +81,14 @@
 <% } %> 
 
 <% if (locals.messages && locals.messages.length > 0) { %> 
-  <%- include('./partials/messages', {messages}) %> 
+  <%- include('messages', {messages}) %> 
 <% } %> 
 
 <% if (!currentUser.admin) { %>
   <div class="row">
-    <div class="col s12 m8 offset-m2 blue lighten-5 blue-text">
+    <div class="col s12 m8 offset-m2 blue lighten-5 blue-text rounded">
       <p>Are you an admin?</p>
-      <p><a class="btn blue hoverable" href="/admin">Upgrade to admin</a></p>
+      <p><a class="btn blue rounded-on-hover" href="/admin">Upgrade to admin</a></p>
     </div>
   </div>
 <% } %>
