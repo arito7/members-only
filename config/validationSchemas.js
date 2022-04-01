@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { body } = require('express-validator');
+const { body, validationResult } = require('express-validator');
 
 exports.signupValidationSchema = [
   body('fname')
@@ -59,3 +59,12 @@ exports.adminUpgradeCodeValidationSchema = [
     .custom((val) => val === process.env.ADMIN_CODE)
     .escape(),
 ];
+
+exports.checkValidationResults = (req, res, next) => {
+  const errors = validationResult(req);
+  if (errors.isEmpty()) {
+    return next();
+  }
+  res.status(403);
+  return res.json({ message: 'Validation error', errors: errors.array() });
+};
