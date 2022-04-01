@@ -17,7 +17,7 @@ const isAuth = (req, res, next) => {
   if (req.isAuthenticated()) {
     return next();
   }
-  res.redirect('/unauthorized');
+  return res.redirect('/unauthorized');
 };
 
 router.get('/unauthorized', (req, res, next) => {
@@ -26,9 +26,9 @@ router.get('/unauthorized', (req, res, next) => {
 
 router.get('/login', function (req, res, next) {
   if (req.user) {
-    res.redirect('/user');
+    return res.redirect('/user');
   }
-  res.render('login');
+  return res.render('login');
 });
 
 router.post(
@@ -46,10 +46,10 @@ router.get('/logout', function (req, res, next) {
 });
 
 router.get('/signup', function (req, res, next) {
-  if (req.isAuthenticated) {
-    res.redirect('/');
+  if (req.isAuthenticated()) {
+    return res.redirect('/');
   }
-  res.render('template', { partial: 'signup', data: {} });
+  return res.render('template', { partial: 'signup', data: {} });
 });
 
 router.post(
