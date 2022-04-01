@@ -1,7 +1,12 @@
 <div class="row">
   <% messages.forEach(message => { %>
-  <div
-    class="col s12 <%= message.type === 'success' ? 'green' : 'red' %> lighten-5"
+  <div 
+    class="col s12 m8 offset-m2
+      <%= message.type === 'success' 
+        ? 'black-text green' 
+        : 'red-text red' 
+      %> 
+      lighten-4"
   >
     <p><%= message.message %></p>
   </div>
