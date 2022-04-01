@@ -11,7 +11,7 @@
         <label for="title">Title</label>
         <input
           required
-          class="validate"
+          class="validate white-text"
           type="text"
           minlength="3"
           name="title"
@@ -19,11 +19,11 @@
         />
       </div>
 
-      <div class="col s12 input-field">
+      <div class="col s12 m8 offset-m2 input-field">
         <textarea
           id="body"
           name="body"
-          class="materialize-textarea validate"
+          class="materialize-textarea validate white-text"
           required
           minlength="3"
           maxlength="200"
@@ -31,8 +31,10 @@
         <label for="body">What's up?</label>
       </div>
 
-      <div class="col s12">
-        <button type="submit" class="btn green">Post</button>
+      <div class="col s12 m8 offset-m2">
+        <button type="submit" class="btn green hoverable">
+          <i class="material-icons-round right">send</i>Post
+        </button>
       </div>
     </form>
   </div>
