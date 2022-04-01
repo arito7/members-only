@@ -6,17 +6,17 @@
     <% if (locals.currentUser && currentUser.membershipStatus === 'member') { %>
       <div
         style="
-          margin-top: 1rem;
-          display: flex;
-          justify-content: space-between;
-          gap: 0.5rem;
+          display: grid;
+          grid-template-columns: auto 1fr 1fr auto;
           align-items: center;
+          gap: 1rem;
+          margin-top: 1rem;
         "
       >
-        <i class="material-icons-round">perm_identity</i>
-        <span class="truncate left-align"> <%= post.creator.full_name %> </span>
         <i class="material-icons-round">watch_later</i>
-        <span class="truncate"> <%= post.formatted_date %> </span>
+        <span class="truncate left-align"><%= post.formatted_date %></span>
+        <i class="material-icons-round right-align">perm_identity</i>
+        <span class="truncate"><%= post.creator.full_name %></span>
       </div>
     <% } %>
     
