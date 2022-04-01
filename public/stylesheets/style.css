@@ -25,3 +25,12 @@ a {
 .rounded {
   border-radius: 1rem !important;
 }
+
+.rounded-on-hover {
+  transition-property: border-radius !important;
+  transition-duration: 300ms !important;
+}
+
+.rounded-on-hover:hover {
+  border-radius: 1rem !important;
+}
