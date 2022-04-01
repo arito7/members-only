@@ -52,33 +52,6 @@ router.get('/new-post', isAuth, (req, res, next) => {
 });
 
 router.post(
-  '/upgrade',
-  validationSchemas.passcodeValidationSchema,
-  (req, res, next) => {
-    if (process.env.PASSCODE === req.body.secret) {
-      User.findByIdAndUpdate(req.user.id, { membershipStatus: 'member' }).exec(
-        (err) => {
-          if (err) {
-            return next(err);
-          }
-          res.render('template', {
-            partial: 'user',
-            data: {
-              messages: [
-                {
-                  type: 'success',
-                  message: 'Congratulation You are now a member!',
-                },
-              ],
-            },
-          });
-        }
-      );
-    }
-  }
-);
-
-router.post(
   '/admin',
   validationSchemas.adminUpgradeCodeValidationSchema,
   (req, res, next) => {
