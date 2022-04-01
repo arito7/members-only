@@ -56,33 +56,6 @@ router.get('/new-post', isAuth, (req, res, next) => {
 });
 
 router.post(
-  '/new-post',
-  isAuth,
-  validationSchemas.postValidationSchema,
-  (req, res, next) => {
-    const errors = validationResult(req);
-    console.log('validation errors: ', errors);
-    if (!errors.isEmpty()) {
-      res.render('./forms/post-form', { errors: errors });
-    }
-
-    const newPost = new Post({
-      title: req.body.title,
-      body: req.body.body,
-      creator: req.user.id,
-    });
-
-    newPost.save((err) => {
-      console.log('new post saved successfully');
-      if (err) {
-        return next(err);
-      }
-      res.redirect('/');
-    });
-  }
-);
-
-router.post(
   '/upgrade',
   validationSchemas.passcodeValidationSchema,
   (req, res, next) => {
