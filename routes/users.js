@@ -1,9 +1,12 @@
 var express = require('express');
-var router = express.Router();
+var users = express.Router();
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+users.get('/', (req, res, next) => {
+  res.render('template', { partial: 'user', data: {} });
 });
 
-module.exports = router;
+users.get('/admin', (req, res, next) => {
+  res.render('template', { partial: 'admin', data: {} });
+});
+
+module.exports = users;

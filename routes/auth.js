@@ -47,10 +47,6 @@ router.post(
   postSignup
 );
 
-router.get('/user', isAuth, (req, res, next) => {
-  res.render('template', { partial: 'user', data: {} });
-});
-
 router.get('/new-post', isAuth, (req, res, next) => {
   res.render('template', { partial: 'post-form', data: {} });
 });
@@ -81,13 +77,6 @@ router.post(
     }
   }
 );
-
-/**
- * ADMIN
- */
-router.get('/admin', (req, res, next) => {
-  res.render('template', { partial: 'admin', data: {} });
-});
 
 router.post(
   '/admin',
