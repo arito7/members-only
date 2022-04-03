@@ -33,14 +33,10 @@ exports.signupValidationSchema = [
 exports.passcodeValidationSchema = [body('secret').trim().escape()];
 
 exports.postValidationSchema = [
-  body('title', 'A title is required.')
-    .trim()
-    .isLength({ min: 3, max: 30 })
-    .escape(),
+  body('title', 'A title is required.').trim().isLength({ min: 3, max: 30 }),
   body('body', 'Your thought is missing!')
     .trim()
-    .isLength({ min: 3, max: 200 })
-    .escape(),
+    .isLength({ min: 3, max: 200 }),
 ];
 
 exports.loginValidationSchema = [
