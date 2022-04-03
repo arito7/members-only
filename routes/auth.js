@@ -28,7 +28,7 @@ auth.get('/login', function (req, res, next) {
 auth.post(
   '/login',
   passport.authenticate('local', {
-    successReturnToOrRedirect: '/user',
+    successReturnToOrRedirect: '/users',
     failureRedirect: '/login',
     failureMessage: true,
   })
