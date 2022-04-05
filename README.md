@@ -1,2 +1,8 @@
-# members-only
- A learning project
+# Members Only
+
+A learning project with a focus on authentication.
+Using 
+- passportjs
+- bcrytjs
+
+
